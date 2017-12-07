@@ -1,0 +1,52 @@
+---
+- name: 
+  gather_facts: false
+  hosts: jumpbox
+  vars:
+    os_cloud_name: ospcloud
+    os_user: cloud-user
+    os_instances:
+      - { os_name: "frontend1", group_name: "frontends", security_groups: [ "ssh", "http" ] } 
+      - { os_name: "app1"     , group_name: "apps"     , security_groups: [ "ssh", "tomcat-web" ] } 
+      - { os_name: "app2"     , group_name: "apps"     , security_groups: [ "ssh", "tomcat-web" ] } 
+      - { os_name: "appdb1"   , group_name: "appdbs"   , security_groups: [ "ssh", "postgres" ] } 
+    deployment: dev
+  roles:
+    - name: osp-jumpbox
+    - name: osp-network
+    - name: osp-securitygroup
+    - name: osp-flavor
+
+  tasks:
+    - name: make instances
+      include_role:
+        name: osp-instance
+      vars:
+        os_name: "{{ item.os_name }}"
+        group_name: "{{ item.group_name }}"
+        security_groups: "{{ item.security_groups }}"
+      with_items: "{{ os_instances }}"
+    - name: get osp facts
+      import_role:
+        name: osp-facts
+
+- name: setup frontend
+  hosts: frontends
+  become: yes
+  roles:
+    - name: repo-setup
+    - name: haproxy-setup
+
+- name: setup app
+  hosts: apps
+  become: yes
+  roles:
+    - name: repo-setup
+    - name: tomcat-setup
+
+- name: setup appdb
+  hosts: appdbs
+  become: yes
+  roles:
+    - name: repo-setup
+    - name: geerlingguy.postgresql

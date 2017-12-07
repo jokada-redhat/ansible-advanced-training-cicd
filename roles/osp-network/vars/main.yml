@@ -1,0 +1,3 @@
+---
+# vars file for roles/osp-network
+os_cloud_name: ospcloud

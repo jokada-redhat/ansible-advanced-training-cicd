@@ -1,0 +1,11 @@
+---
+# tasks file for roles/osp-flavor
+- name: Create nova flavor
+  os_nova_flavor:
+    cloud: "{{ os_cloud_name }}"
+    state: present
+    name: "{{ item.name }}"
+    ram: "{{ item.ram }}"
+    vcpus: "{{ item.vcpus }}"
+    disk: "{{ item.disk }}"
+  with_items: "{{ os_flavors }}"

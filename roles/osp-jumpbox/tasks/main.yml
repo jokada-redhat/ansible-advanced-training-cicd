@@ -1,0 +1,13 @@
+---
+# tasks file for roles/osp-jumpbox
+- name: Generate key files
+  user:
+    name: "{{ ansible_env.USER }}"
+    generate_ssh_key: yes
+    ssh_key_file: .ssh/test_id_rsa
+- name: generate ansible_ssh
+  os_keypair:
+    cloud: "{{ os_cloud_name }}"
+    state: present
+    name: ansible_ssh
+    public_key_file: "{{ ansible_env.HOME }}/.ssh/test_id_rsa.pub"

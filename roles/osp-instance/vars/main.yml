@@ -1,0 +1,13 @@
+---
+# vars file for roles/osp-instance
+os_cloud_name: ospcloud
+osp_pubkey_name: openstack.pub
+osp_pubkey_from: http://www.opentlc.com/download/ansible_bootcamp/openstack_keys/{{ osp_pubkey_name }}
+osp_temporal_dir: /tmp
+osp_repo_name: internal.repo
+osp_repo_from: http://www.opentlc.com/download/ansible_bootcamp/repo/{{ osp_repo_name }}
+os_server_flavor: m2.small
+os_server_image: rhel-guest
+os_keyname: ansible_ssh
+os_user: cloud-user
+security_groups: icmp,ssh

@@ -1,0 +1,5 @@
+---
+# vars file for roles/osp-flavor
+os_cloud_name: ospcloud
+os_flavors:
+ - { name: "m2.small", ram: 2048, vcpus: 1, disk: 10 }

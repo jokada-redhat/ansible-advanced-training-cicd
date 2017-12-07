@@ -1,0 +1,20 @@
+---
+- name: discribe 
+  gather_facts: false
+  hosts: jumpbox
+  roles:
+    - name: osp-facts
+
+- name: do test
+  hosts: frontends
+  gather_facts: false
+  tasks:
+  - get_url:
+      dest: /tmp/index.html
+      url: http://{{ play_hosts[0] }}/index.html
+      force: true
+    register: response_http
+  - name: check != 200
+    fail:
+       msg: "Could not receive http_status_code '200'"
+    when: response_http.status_code != 200

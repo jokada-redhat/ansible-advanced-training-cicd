@@ -1,0 +1,38 @@
+---
+# tasks file for roles/osp-instance
+- name: Create a server instance for "{{ os_name }}"
+  os_server:
+    cloud: "{{ os_cloud_name }}"
+    name: "{{ os_name }}"
+    image: "{{ os_server_image }}"
+    meta: "group={{ group_name }},deployment_name={{ deployment }}"
+    flavor: "{{ os_server_flavor }}"
+    security_groups: "{{ security_groups }}"
+    key_name: "{{ os_keyname }}"
+    nics:
+    - net-name: int_network
+    userdata: |
+      #!/bin/bash
+      curl -o {{ osp_temporal_dir }}/{{ osp_pubkey_name }} {{ osp_pubkey_from }}
+      cat {{ osp_temporal_dir }}/{{ osp_pubkey_name }} >> /home/{{ os_user }}/.ssh/authorized_keys
+      curl -o {{ osp_temporal_dir }}/{{ osp_repo_name }} {{ osp_repo_from }}
+      cp {{ osp_temporal_dir }}/{{ osp_repo_name }} /etc/yum.repos.d/{{ osp_repo_name }}
+
+- name: Add floating IP for "{{ os_name }}"
+  os_floating_ip:
+    cloud: "{{ os_cloud_name }}"
+    state: present
+    reuse: yes
+    server: "{{ os_name }}"
+    network: ext_network
+    wait: true
+    timeout: 180
+  register: instancefloatingip
+
+- name: Wait for "{{ os_name }}" to be available
+  wait_for:
+    host: "{{ instancefloatingip.floating_ip.floating_ip_address }}"
+    port: 22
+    search_regex: OpenSSH
+    timeout: 600
+  delegate_to: "{{ inventory_hostname }}"
