@@ -2,7 +2,7 @@
 - name: setup 3tiers app
   hosts: jumpbox
   roles:
-    name: osp-facts
+    - name: osp-facts
 
 - name: setup frontend
   hosts: frontends
