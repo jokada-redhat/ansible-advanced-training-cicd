@@ -1,6 +1,6 @@
 ---
 - name: setup osp
-  gather_facts: false
+  gather_facts: True
   hosts: jumpbox
   vars:
     os_cloud_name: ospcloud
