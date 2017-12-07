@@ -1,28 +1,26 @@
 ---
- - name: setup 3tiers app
-   hosts: jumpbox
-   tasks:
-    - name: get osp facts
-      import_role:
-        name: osp-facts
+- name: setup 3tiers app
+  hosts: jumpbox
+  roles:
+    name: osp-facts
 
-    - name: setup frontend
-      hosts: frontends
-      become: yes
-      roles:
-        - name: repo-setup
-        - name: haproxy-setup
+- name: setup frontend
+  hosts: frontends
+  become: yes
+  roles:
+    - name: repo-setup
+    - name: haproxy-setup
 
-    - name: setup app
-      hosts: apps
-      become: yes
-      roles:
-        - name: repo-setup
-        - name: tomcat-setup
+- name: setup app
+  hosts: apps
+  become: yes
+  roles:
+    - name: repo-setup
+    - name: tomcat-setup
 
-    - name: setup appdb
-      hosts: appdbs
-      become: yes
-      roles:
-        - name: repo-setup
-        - name: geerlingguy.postgresql
+- name: setup appdb
+  hosts: appdbs
+  become: yes
+  roles:
+    - name: repo-setup
+    - name: geerlingguy.postgresql
