@@ -1,5 +1,18 @@
-- name: cleanup
-  hosts: all
+---
+- name: cleanup frontends
+  hosts: frontends
+  gather_facts: false
+  become: true
+  roles:
+    - { role: "./roles/cleaner" }
+- name: cleanup apps
+  hosts: apps
+  gather_facts: false
+  become: true
+  roles:
+    - { role: "./roles/cleaner" }
+- name: cleanup appdbs
+  hosts: appdbs
   gather_facts: false
   become: true
   roles:
